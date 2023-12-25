@@ -7,9 +7,9 @@ router.get('/getProductos',getProducto)
 
 router.post('/postProductos',createProducto)
 
-router.put('/obProductos',updateProducto)
+router.patch('/uptProductos/:id',updateProducto)
 
-router.delete('/obProductos',deleteProducto)
+router.delete('/delProductos/:id',deleteProducto)
 
 
 export default router
