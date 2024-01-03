@@ -24,6 +24,7 @@ app.use(cors(corsOption))
 
 
 app.use(productos)
+
 app.use((req,res,next)=> {
     res.status(404).json({
         message: '404 NOT FOUND'
