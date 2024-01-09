@@ -1,16 +1,31 @@
 import { useState } from 'react'
+import { Route, Routes } from 'react-router-dom'
 import MainAdmin from './pages/admin/mainAdmin'
 import Login from './pages/admin/login'
+import { AuthProvider } from './context/AuthProvider'
+import AuthLayout from './layouts/AuthLayout'
+import RutaProtegida from './layouts/RutaProtegida'
+
+
 function App() {
 
 
   return (
     <>
-    
-      {/* <MainAdmin/> */}
-      <Login/>
-    
+ <AuthProvider>
+      <Routes>
      
+      <Route path='/' element={<AuthLayout/>}>
+            <Route index element={<Login/>}/>
+            
+        </Route>
+
+      <Route path='/admin' element={<RutaProtegida />}>
+            <Route index element={<MainAdmin />} />
+           
+          </Route>
+      </Routes>
+    </AuthProvider>
     </>
   )
 }

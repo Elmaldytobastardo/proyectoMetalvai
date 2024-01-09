@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import cors from 'cors';
 import "dotenv/config"
 import productos from "./routes/productos.routes.js"
+import admin from './routes/admin.routes.js'
 const app = express()
 app.use(express.json())
 app.disable('x-powered-by')
@@ -22,7 +23,7 @@ const corsOption = {
 app.use(cors(corsOption))
 
 
-
+app.use(admin)
 app.use(productos)
 
 app.use((req,res,next)=> {
