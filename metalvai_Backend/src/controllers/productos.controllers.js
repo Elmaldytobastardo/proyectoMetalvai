@@ -23,7 +23,8 @@ try {
    
     const [rows] = await pool.query('SELECT * FROM producto') 
      
- res.send({rows})
+ res.json(rows)
+    console.log(rows)
 } catch (error) {
     return res.status(500).json({
         message: 'Something goes wrong'
@@ -61,7 +62,7 @@ export const updateProducto = async (req,res) => {
   
     const [result] = await pool.query('UPDATE producto SET nombre = IFNULL(?,nombre), precio = IFNULL(?,precio), stock = IFNULL(?,stock) , idusuario = IFNULL(?,idusuario) WHERE id = ?', 
     [nombre,precio,stock,idusuario, id])
-    console.log(result)
+    
     if (result.affectedRows == 0){
         return res.status(404).json({
             message: 'Producto no existe'

@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink,Link } from "react-router-dom";
 import {
   IconButton,
   Typography,
@@ -50,18 +51,42 @@ export function SidebarWithBurgerMenu() {
 <Card className=" hidden lg:block  w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
      
       <List>
+      <NavLink
+  to="/admin"
+  className={({ isActive, isPending }) =>
+    isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
+  }
+>
         <ListItem>
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Dashboard
+     
+  Dashboard
+
         </ListItem>
+        </NavLink>
+        <NavLink
+  to="/admin/producto"
+  className={({ isActive, isPending }) =>
+    isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
+  }
+>
         <ListItem>
           <ListItemPrefix>
             <ShoppingBagIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Productos
+     
+  Productos 
+
         </ListItem>
+       </NavLink>
+       <NavLink
+  to="/admin/clientes"
+  className={({ isActive, isPending }) =>
+    isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
+  }
+>
         <ListItem>
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
@@ -71,6 +96,7 @@ export function SidebarWithBurgerMenu() {
             <Chip value="14" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
           </ListItemSuffix>
         </ListItem>
+        </NavLink>
         <ListItem>
           <ListItemPrefix>
             <UserCircleIcon className="h-5 w-5" />

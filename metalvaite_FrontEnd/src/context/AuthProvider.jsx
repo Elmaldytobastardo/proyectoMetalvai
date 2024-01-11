@@ -25,7 +25,6 @@ const AuthProvider = ({children}) =>{
                 const {data} = await clienteAxios.get('/getAdmin' ,config)
                 
                 setAuth(data[0])
-                console.log(data[0].id)
                 
             } catch (error) {
                 

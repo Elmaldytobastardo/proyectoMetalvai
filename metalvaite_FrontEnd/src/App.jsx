@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import MainAdmin from './pages/admin/mainAdmin'
+import ProdAdmin from './pages/admin/ProdAdmin'
 import Login from './pages/admin/login'
 import { AuthProvider } from './context/AuthProvider'
 import AuthLayout from './layouts/AuthLayout'
@@ -22,7 +23,7 @@ function App() {
 
       <Route path='/admin' element={<RutaProtegida />}>
             <Route index element={<MainAdmin />} />
-           
+            <Route path='producto' element={<ProdAdmin />} />
           </Route>
       </Routes>
     </AuthProvider>
