@@ -97,12 +97,19 @@ export function SidebarWithBurgerMenu() {
           </ListItemSuffix>
         </ListItem>
         </NavLink>
+        <NavLink
+  to="/admin/ventas"
+  className={({ isActive, isPending }) =>
+    isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
+  }
+>
         <ListItem>
           <ListItemPrefix>
             <UserCircleIcon className="h-5 w-5" />
           </ListItemPrefix>
           Ver ventas
         </ListItem>
+        </NavLink>
         <ListItem>
           <ListItemPrefix>
             <Cog6ToothIcon className="h-5 w-5" />

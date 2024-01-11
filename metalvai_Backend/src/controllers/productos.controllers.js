@@ -24,7 +24,7 @@ try {
     const [rows] = await pool.query('SELECT * FROM producto') 
      
  res.json(rows)
-    console.log(rows)
+    
 } catch (error) {
     return res.status(500).json({
         message: 'Something goes wrong'
@@ -33,21 +33,32 @@ try {
  
 }
 
+
+
 export const createProducto = async (req,res) => {
     const {nombre, precio, stock,idusuario } = req.body
+    const [existe] = await pool.query('SELECT * FROM producto WHERE nombre =?', [nombre])  
+    if(existe.length > 0){
+        const error = new Error('Producto ya registrado');
+        return res.status(400).json({msg: error.message});
+     }
+    
     try {
         const [rows] = await pool.query('INSERT INTO producto (nombre,precio, stock,idusuario) VALUES(?,?,?,?)',[nombre,precio,stock,idusuario]) 
+        
+            res.json({
+                id: rows.insertId,
+                nombre,
+                precio,
+                stock,
+                idusuario
+            })
          
-     res.send({
-         id: rows.insertId,
-         nombre,
-         precio,
-         stock,
-         idusuario
-     })
+   
+     
     } catch (error) {
         return res.status(500).json({
-            message: 'Something goes wrong'
+            msg: 'Complete todos los campos'
         })
     }
 
@@ -68,7 +79,6 @@ export const updateProducto = async (req,res) => {
             message: 'Producto no existe'
         })
     }
-   
 
     const [rows] = await pool.query('SELECT * FROM producto WHERE id = ?', [id])
     res.json(rows[0])
