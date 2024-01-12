@@ -16,18 +16,14 @@ import {
     Input,
   } from "@material-tailwind/react";
 const Datagrid = (props) => {
-  const [gridApi, setGridApi] = useState([])
-  const [gridApiColumnApi, setGridColumnApi] = useState([])
-  const [datos, setDatos] = useState([])
-  const [searchTerm, setSearchTerm] = useState('');
- 
+
   
- 
   return (
 
     <>
- <Card className="h-full w-full ">
-  <CardHeader floated={false} shadow={false} className="rounded-none">
+    
+ <Card className="h-full w-full lg:w-[55rem] ">
+  <CardHeader floated={false} shadow={false} className="rounded-none pt-2">
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div>
             <Typography variant="h5" color="blue-gray">
@@ -39,7 +35,7 @@ const Datagrid = (props) => {
             <div className="w-full md:w-72">
               <Input
               type='search'
-                label="Search"
+                label="Buscar"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 onChange={props.onSearchTermChange}
               />

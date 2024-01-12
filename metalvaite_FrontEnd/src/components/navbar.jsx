@@ -11,7 +11,7 @@ import useAuth from "../hooks/useAuth";
 export function NavbarDefault() {
   const [openNav, setOpenNav] = useState(false);
   const {auth} = useAuth();
-  console.log(auth.nombre)
+
   useEffect(() => {
     window.addEventListener(
       "resize",

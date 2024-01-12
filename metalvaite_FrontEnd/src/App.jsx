@@ -6,6 +6,7 @@ import Login from './pages/admin/login'
 import { AuthProvider } from './context/AuthProvider'
 import AuthLayout from './layouts/AuthLayout'
 import RutaProtegida from './layouts/RutaProtegida'
+import VentasAdmin from './pages/admin/VentasAdmin'
 
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
       <Route path='/admin' element={<RutaProtegida />}>
             <Route index element={<MainAdmin />} />
             <Route path='producto' element={<ProdAdmin />} />
-            <Route path='ventas' element={<MainAdmin />} />
+            <Route path='ventas' element={<VentasAdmin />} />
           </Route>
       </Routes>
     </AuthProvider>

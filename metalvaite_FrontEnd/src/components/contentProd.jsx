@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 import clienteAxios from "../config/axios";
 import Datagrid from "./Datagrid";
+
 import {
     Typography,
     Button,
     Input,
   } from "@material-tailwind/react";
-  import {
-
-    MagnifyingGlassIcon,
-    PlusCircleIcon 
-  } from "@heroicons/react/24/outline";
-  import { CheckIcon,XMarkIcon } from "@heroicons/react/24/solid";
+  import { CheckIcon,XMarkIcon,PencilIcon} from "@heroicons/react/24/solid";
   import useAuth from "../hooks/useAuth";
   import Alerta from "./Alerta";
+  
+
 export function ContentProd(props) {
     const {auth} = useAuth();
     const [nombre, setNombre] = useState('')
@@ -23,6 +21,10 @@ export function ContentProd(props) {
     const [rowData, setRowData] = useState([])
     const [alerta, setAlerta] = useState({})
     const [searchTerm, setSearchTerm] = useState('');
+    
+    const [open, setOpen] = useState(true);
+    
+    
     useEffect(() => {
      
 
@@ -31,7 +33,7 @@ export function ContentProd(props) {
     }, []);
   
 
-    const [desplegableAgregarAbierto, setDesplegableAbierto] = useState(false);
+  const [desplegableAgregarAbierto, setDesplegableAbierto] = useState(false);
 const toggleDesplegable = () => {
     setDesplegableAbierto(!desplegableAgregarAbierto);
   };
@@ -39,17 +41,25 @@ const toggleDesplegable = () => {
   const obtenerDatos = async (e) => {
     const url = '/getProductos'
     const res = await clienteAxios.get(url)
-    setRowData(res.data)
+    setRowData(res.data.rows)
 }
+
     const [colDefs, setColDefs] = useState([
         { headerName: "Nombre ", field: "nombre", sortable: true },
         { headerName: "Precio ", field: "precio", sortable: true },
         { headerName: "Stock ", field: "stock", sortable: true },
+        { headerName: "Accion" , field:"stock", cellRenderer:(params) => 
+        <div className="flex  h-full">
+  
+            <div className="flex ml-2">
+            <Button className="flex items-end justify-center  h-full " onClick={() => eliminar(params.data.id)} color="red">
+            <XMarkIcon strokeWidth={2} className="h-4 w-5 pr-2"  /> Eliminar</Button>
+            </div>
+            </div> , width: 300,  },
        
     ]);
 
     
-
     const resetForm = () => {
         setNombre(''),
             setPrecio(''),
@@ -57,6 +67,7 @@ const toggleDesplegable = () => {
     }
 
     const {msg} = alerta
+
     const handleSubmitProd = async (e) => {
         e.preventDefault()
             
@@ -64,14 +75,15 @@ const toggleDesplegable = () => {
              
                 const url = '/postProductos'
                 const {data} = await clienteAxios.post(url, {nombre,precio,stock,idusuario })
+              
                 setAlerta({
                     msg:"Producto agregado exitosamente"
                    })
                 obtenerDatos()
-                   
                 resetForm()
+                setOpen(true)
               }catch(error){
-                
+               
                 setAlerta({
                     msg: error.response.data.msg,
                     error:true
@@ -81,6 +93,23 @@ const toggleDesplegable = () => {
     
         
       };
+
+      async function  eliminar(id) { 
+        
+        const res = await clienteAxios.delete(`/delProductos/${id}`).then((res) =>{
+          
+          setAlerta({
+            msg:"Producto eliminado exitosamente"
+           })
+
+          obtenerDatos()
+          
+        }).catch((err)=>{
+          
+        })
+        
+      }
+
       const onSearchTermChange = (e) => {
         setSearchTerm(e.target.value);
       };
@@ -90,16 +119,23 @@ const toggleDesplegable = () => {
           row.nombre.toLowerCase().includes(searchTerm.toLowerCase()) 
           
       );
+
     
 
-
+        
     return (
         <>
-
-
-
-    <Datagrid  onSearchTermChange={onSearchTermChange} filteredRowData={filteredRowData} columnDefs={colDefs} nombre={"Producto"} nomButton={"Agregar Producto"} desplegableAgregarAbierto={toggleDesplegable} />
-
+        <div className="w-full lg:w-[50rem] h-full">
+        {msg && <Alerta 
+          alerta={alerta} open={open} />}
+       
+    <Datagrid  onSearchTermChange={onSearchTermChange} 
+    filteredRowData={filteredRowData}
+     columnDefs={colDefs} 
+     nombre={"Producto"} 
+     nomButton={"Agregar Producto"} 
+     desplegableAgregarAbierto={toggleDesplegable} />
+ </div>
     {desplegableAgregarAbierto && 
     (
         
@@ -107,8 +143,7 @@ const toggleDesplegable = () => {
              
         <div className="fixed top-0 right-0 h-full w-[20rem] bg-white p-4 shadow">
               <Typography variant="h3"> Agregar Productos </Typography>
-              {msg && <Alerta 
-          alerta={alerta}/>}
+           
 
               <Typography variant="h5" className='pt-5'> Nombre del producto </Typography>
 

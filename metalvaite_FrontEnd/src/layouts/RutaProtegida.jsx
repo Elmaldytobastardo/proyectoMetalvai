@@ -8,8 +8,7 @@ const RutaProtegida = () => {
   const {auth, cargando } = useAuth();
  
 
-  console.log(cargando)
-  console.log(auth)
+
   if(cargando) return (  <div className='grid h-screen place-items-center'> 
   <Spinner className="h-12 w-12 " color="red" /> </div>)
  
