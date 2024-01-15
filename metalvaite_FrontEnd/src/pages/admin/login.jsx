@@ -27,7 +27,7 @@ function Login() {
 
             localStorage.setItem('token', data.token)
             setAuth(data)
-            navigate('/admin')
+            navigate('/admin/dashboard')
            
           }catch(error){
         console.log(error)
