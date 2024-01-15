@@ -22,7 +22,7 @@ const Datagrid = (props) => {
 
     <>
     
- <Card className="h-full w-full lg:w-[55rem] ">
+ <Card className="h-full w-full">
   <CardHeader floated={false} shadow={false} className="rounded-none pt-2">
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div>
@@ -52,6 +52,8 @@ const Datagrid = (props) => {
     pagination={true} 
     paginationPageSize={10} 
     paginationAutoPageSize={true}
+
+    onCellEditingStopped={props.handleCellEditingStopped}
 
    />
 </div>

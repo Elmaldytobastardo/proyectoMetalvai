@@ -14,7 +14,7 @@ function VentasAdmin() {
     
     <div className="flex h-screen pt-5">
     <SidebarWithBurgerMenu/>
-    <div className='pl-[2rem] '>
+    <div className='lg:pl-[2rem] '>
     <ContentVentas/>
     </div>
     

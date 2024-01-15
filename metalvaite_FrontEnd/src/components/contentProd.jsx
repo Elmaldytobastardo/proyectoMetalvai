@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import clienteAxios from "../config/axios";
 import Datagrid from "./Datagrid";
-
+import toast, { Toaster } from 'react-hot-toast';
 import {
     Typography,
     Button,
@@ -9,14 +9,14 @@ import {
   } from "@material-tailwind/react";
   import { CheckIcon,XMarkIcon,PencilIcon} from "@heroicons/react/24/solid";
   import useAuth from "../hooks/useAuth";
-  import Alerta from "./Alerta";
-  
+ 
 
 export function ContentProd(props) {
     const {auth} = useAuth();
     const [nombre, setNombre] = useState('')
     const [precio, setPrecio] = useState('')
     const [stock, setStock] = useState('')
+    const [stock_critico, setStock_Critico] = useState()
     const [idusuario, setIdusuario] = useState(auth.id)
     const [rowData, setRowData] = useState([])
     const [alerta, setAlerta] = useState({})
@@ -26,14 +26,12 @@ export function ContentProd(props) {
     
     
     useEffect(() => {
-     
-
         obtenerDatos();
-
     }, []);
-  
+
 
   const [desplegableAgregarAbierto, setDesplegableAbierto] = useState(false);
+
 const toggleDesplegable = () => {
     setDesplegableAbierto(!desplegableAgregarAbierto);
   };
@@ -44,10 +42,36 @@ const toggleDesplegable = () => {
     setRowData(res.data.rows)
 }
 
+
+const handleCellEditingStopped =  async (event) => {
+   try{
+    const { id, nombre, precio,stock,stock_critico } = event.data;
+      
+                const url = `/uptProductos/${id}`
+
+                const {data} = await clienteAxios.patch(url, {nombre,precio,stock,idusuario,stock_critico })
+               
+                obtenerDatos()
+                resetForm()
+                toast.success('Producto actualizado exitosamente');
+              }catch(error){
+                obtenerDatos()
+                toast.error(`${error.response.data.msg}`);
+             
+              }
+  
+};
+
+
+
     const [colDefs, setColDefs] = useState([
-        { headerName: "Nombre ", field: "nombre", sortable: true },
-        { headerName: "Precio ", field: "precio", sortable: true },
-        { headerName: "Stock ", field: "stock", sortable: true },
+        { headerName: "Nombre ", field: "nombre", sortable: true, editable:true },
+        { headerName: "Precio ", field: "precio", sortable: true, editable:true, valueFormatter: (params) => {
+         
+          return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(params.value);
+        } },
+        { headerName: "Stock ", field: "stock", sortable: true, editable:true },
+        { headerName: "Stock critico ", field: "stock_critico", sortable: true, editable:true },
         { headerName: "Accion" , field:"stock", cellRenderer:(params) => 
         <div className="flex  h-full">
   
@@ -62,32 +86,26 @@ const toggleDesplegable = () => {
     
     const resetForm = () => {
         setNombre(''),
-            setPrecio(''),
-            setStock('')
+        setPrecio(''),
+        setStock('')
+        setStock_Critico('')
     }
 
-    const {msg} = alerta
+    
 
     const handleSubmitProd = async (e) => {
         e.preventDefault()
             
             try{
-             
+                
                 const url = '/postProductos'
-                const {data} = await clienteAxios.post(url, {nombre,precio,stock,idusuario })
-              
-                setAlerta({
-                    msg:"Producto agregado exitosamente"
-                   })
+                const {data} = await clienteAxios.post(url, {nombre:nombre,precio:precio,stock:stock,idusuario:idusuario,stock_critico:stock_critico || null })
                 obtenerDatos()
                 resetForm()
-                setOpen(true)
+                toast.success('Producto agregado exitosamente');
               }catch(error){
                
-                setAlerta({
-                    msg: error.response.data.msg,
-                    error:true
-                  })
+                toast.error(`${error.response.data.msg}`);
              
               }
     
@@ -97,13 +115,13 @@ const toggleDesplegable = () => {
       async function  eliminar(id) { 
         
         const res = await clienteAxios.delete(`/delProductos/${id}`).then((res) =>{
-          
+          setOpen(true)
           setAlerta({
             msg:"Producto eliminado exitosamente"
            })
-
+           toast.success('Producto eliminado exitosamente');
           obtenerDatos()
-          
+        
         }).catch((err)=>{
           
         })
@@ -125,16 +143,17 @@ const toggleDesplegable = () => {
         
     return (
         <>
-        <div className="w-full lg:w-[50rem] h-full">
-        {msg && <Alerta 
-          alerta={alerta} open={open} />}
-       
+      
+        <Toaster position="top-center" />
+        <div className="lg:w-[62rem] h-full">
     <Datagrid  onSearchTermChange={onSearchTermChange} 
     filteredRowData={filteredRowData}
      columnDefs={colDefs} 
-     nombre={"Producto"} 
+     nombre={"Productos"} 
      nomButton={"Agregar Producto"} 
-     desplegableAgregarAbierto={toggleDesplegable} />
+     desplegableAgregarAbierto={toggleDesplegable}
+     handleCellEditingStopped={handleCellEditingStopped}
+      />
  </div>
     {desplegableAgregarAbierto && 
     (
@@ -160,7 +179,12 @@ const toggleDesplegable = () => {
           <Typography variant="h5" className='pt-5 '> Stock </Typography>
         <div className="relative inline-block text-left pt-3 w-full">
         
-        <Input type="number" variant="outlined" label="Stock" placeholder="Stock" value={stock} onChange={e => setStock(e.target.value)} />
+        <Input type="number" variant="outlined" label="Stock" placeholder="12345" value={stock} onChange={e => setStock(e.target.value)} />
+          </div>
+          <Typography variant="h5" className='pt-5 '> Stock notificacion (opcional) </Typography>
+          <div className="relative inline-block text-left pt-3 w-full">
+        
+        <Input type="number" variant="outlined" label="Stock critico" placeholder="12345" value={stock_critico} onChange={e => setStock_Critico(e.target.value)} />
           </div>
           <div className="flex m-2 pt-5">
           <Button type="submit" className="flex items-end justify-center  " size="sm" color="green" >

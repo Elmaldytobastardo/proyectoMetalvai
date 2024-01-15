@@ -24,6 +24,7 @@ function App() {
 
       <Route path='/admin' element={<RutaProtegida />}>
             <Route index element={<MainAdmin />} />
+            <Route path='dashboard'  element={<MainAdmin />} />
             <Route path='producto' element={<ProdAdmin />} />
             <Route path='ventas' element={<VentasAdmin />} />
           </Route>

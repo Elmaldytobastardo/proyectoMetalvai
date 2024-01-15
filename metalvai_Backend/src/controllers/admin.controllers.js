@@ -24,7 +24,7 @@ export const loginAdmin = async (req,res) => {
     }
        
      catch (error) {
-        console.log(rows[0])
+     
         return res.status(500).json({
             message: 'Usuario no existe'
         })
