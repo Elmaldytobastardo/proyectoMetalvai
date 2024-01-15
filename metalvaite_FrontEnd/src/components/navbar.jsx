@@ -1,17 +1,18 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import {
   Navbar,
-  MobileNav,
   Typography,
-  Button,
   IconButton,
   Collapse 
 } from "@material-tailwind/react";
- 
+import useAuth from "../hooks/useAuth";
+
+
 export function NavbarDefault() {
-  const [openNav, setOpenNav] = React.useState(false);
- 
-  React.useEffect(() => {
+  const [openNav, setOpenNav] = useState(false);
+  const {auth} = useAuth();
+
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false),
@@ -22,11 +23,12 @@ export function NavbarDefault() {
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
         as="li"
-        variant="small"
+        variant="h2"
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <svg
+        Bienvenido {auth.nombre}
+        {/* <svg
           width="16"
           height="15"
           viewBox="0 0 16 15"
@@ -111,7 +113,7 @@ export function NavbarDefault() {
         </svg>
         <a href="#" className="flex items-center">
           Docs
-        </a>
+        </a> */}
       </Typography>
     </ul>
   );

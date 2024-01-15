@@ -3,6 +3,9 @@ import dotenv from "dotenv"
 import cors from 'cors';
 import "dotenv/config"
 import productos from "./routes/productos.routes.js"
+import admin from './routes/admin.routes.js'
+import ventas from './routes/ventas.routes.js'
+import clientes from './routes/clientes.routes.js'
 const app = express()
 app.use(express.json())
 app.disable('x-powered-by')
@@ -22,8 +25,10 @@ const corsOption = {
 app.use(cors(corsOption))
 
 
-
+app.use(admin)
 app.use(productos)
+app.use(clientes)
+app.use(ventas)
 
 app.use((req,res,next)=> {
     res.status(404).json({
