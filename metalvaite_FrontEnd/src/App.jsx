@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthProvider'
 import AuthLayout from './layouts/AuthLayout'
 import RutaProtegida from './layouts/RutaProtegida'
 import VentasAdmin from './pages/admin/VentasAdmin'
+import ClienteAdmin from './pages/admin/ClienteAdmin'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path='dashboard'  element={<MainAdmin />} />
             <Route path='producto' element={<ProdAdmin />} />
             <Route path='ventas' element={<VentasAdmin />} />
+            <Route path='cliente' element={<ClienteAdmin />} />
           </Route>
       </Routes>
     </AuthProvider>

@@ -80,7 +80,7 @@ export function SidebarWithBurgerMenu() {
         </ListItem>
        </NavLink>
        <NavLink
-  to="/admin/clientes"
+  to="/admin/cliente"
   className={({ isActive, isPending }) =>
     isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
   }
