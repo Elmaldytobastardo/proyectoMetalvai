@@ -39,32 +39,67 @@ export function ContentVentas() {
   const [productosVenta, setProductosVenta] = useState([])
   const [verVenta, setVerVenta] = useState([])
   
-  
+  useEffect(() => {
+    
+    obtenerDatos();
+    calcularTotal();
+  }, [listaProductos]);
+
+
+  async function obtenerDatos() {
+    const id = idusuario
+   
+    const res = await clienteAxios.get(`/getVentasByUser/${id}`).then((res) => {
+      setDatos(res.data.rows)
+
+    }).catch((err) => {
+      console.log("chaoo 0")
+    })
+    const res2 = await clienteAxios.get(`/getClientes/${id}`).then((res2) => {
+      setClientes(res2.data.rows)
+
+    }).catch((err) => {
+      console.log("chaoo 2")
+    })
+  }
+
+
+
   const toggleDesplegable = async () => {
     
-  
+   
+    const id = idusuario
+    const res3 = await clienteAxios.get(`/getProductos/${id}`).then((res3) => {
+      setProductos(res3.data.rows)
+      console.log("olaaa")
+
+    })
     setDesplegableAbierto(!desplegableAgregarAbierto);
-
-
+    agregarProducto([])
+    setClienteSeleccionado([])
   };
   
  
   const seleccionarProducto = async (producto) => {
+   const id = idusuario
+   
     producto.resultado = producto.precio
     producto.cantidad = 1
     
     setProductoSeleccionado(producto)
     agregarProducto((prevProductos) => [...prevProductos, producto])
-    
-    
+ 
     
     const indiceAEliminar = productosBD.indexOf(producto);
     if (indiceAEliminar !== -1) {
       productosBD.splice(indiceAEliminar, 1);
+      
     }
-
+  
     setDesplegarOpcionesB(!desplegarOpcionesB);
   };
+
+
   const seleccionarCliente = (cliente) => {
     
     setClienteSeleccionado(cliente)
@@ -86,7 +121,12 @@ export function ContentVentas() {
   
 
     if(nombre === '' ){
-      toast.error(`${error.response.data.msg}`);
+      toast.error(`Seleccione un Cliente`);
+      return
+    }
+    if(listaProductos.length == 0 ){
+      toast.error(`Seleccione un producto`);
+      return
     }
 
     try {
@@ -94,9 +134,12 @@ export function ContentVentas() {
       const url = `/postVentas`
       const res = await clienteAxios.post(url, { nombre, fecha_venta, precio, idusuario, idcliente, productos })
       toast.success('Venta agregada exitosamente');
-      obtenerDatos();
-
+      listaProductos.map((producto) => (producto.stock = producto.stock - producto.cantidad))
    
+  
+      obtenerDatos();
+      
+      
     } catch (error) {
       console.log(error)
       toast.error(`${error.response.data.msg}`);
@@ -105,9 +148,6 @@ export function ContentVentas() {
 
   }
 
-
-
-      
 
   const actualizar = (valorTotalSuma) => {
     if (clienteSeleccionado && listaProductos) {
@@ -198,6 +238,7 @@ export function ContentVentas() {
     setOpen(!open)
     setVerVenta([])
     setProductosVenta([])
+   
   }
 
   const [colDefs, setColDefs] = useState([
@@ -236,39 +277,12 @@ export function ContentVentas() {
   
 
 
-  async function obtenerDatos() {
-    const id = idusuario
-   
-    const res = await clienteAxios.get(`/getVentasByUser/${id}`).then((res) => {
-      setDatos(res.data.rows)
-
-    }).catch((err) => {
-      console.log("chaoo 0")
-    })
-
-    const res3 = await clienteAxios.get(`/getProductos/${id}`).then((res3) => {
-      setProductos(res3.data.rows)
-      console.log("olaaa")
-
-    }).catch((err) => {
-      console.log("chaoo")
-    })
-    const res2 = await clienteAxios.get(`/getClientes/${id}`).then((res2) => {
-      setClientes(res2.data.rows)
-
-    }).catch((err) => {
-      console.log("chaoo 2")
-    })
-  }
+  
 
 
 
 
-  useEffect(() => {
-    
-    obtenerDatos();
-    calcularTotal();
-  }, [listaProductos]);
+
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
