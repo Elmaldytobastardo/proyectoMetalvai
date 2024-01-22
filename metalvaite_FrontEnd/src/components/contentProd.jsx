@@ -37,7 +37,8 @@ const toggleDesplegable = () => {
   };
  
   const obtenerDatos = async (e) => {
-    const url = '/getProductos'
+    const id = idusuario
+    const url = `/getProductos/${id}`
     const res = await clienteAxios.get(url)
     setRowData(res.data.rows)
 }

@@ -1,24 +1,27 @@
 import {pool} from '../db.js'
-export const getVentas = async (req,res) => {
 
+export const getVentaByIdUser = async (req,res) =>{
+     
     try {
-    
-        const [rows] = await pool.query('SELECT * FROM venta') 
-    
-     res.send({rows})
+        const [rows] = await pool.query('SELECT * FROM venta WHERE idusuario=?',[req.params.id]) 
+     if (rows.length <= 0 )return res.status(404).json({
+        message: 'Venta no encontrado'
+     })
+ res.send({rows})
     } catch (error) {
         return res.status(500).json({
-            message: 'Quedó la pala'
+            message: 'Something goes wrong'
         })
     }
-     
-    }
+}
     
     export const postVentas = async (req,res) => {
+        
         const {nombre,fecha_venta,precio,idusuario,idcliente,productos} = req.body
-        try {
+
+            try { 
             const [rows] = await pool.query('INSERT INTO venta (nombre,fecha_venta,precio, idusuario, idcliente,productos) VALUES(?,?,?,?,?,?)',[nombre,fecha_venta,precio,idusuario,idcliente,productos]) 
-              
+                
          res.send({
              id: rows.insertId,
              nombre,
@@ -29,8 +32,8 @@ export const getVentas = async (req,res) => {
              productos
          })
         } catch (error) {
-           
-            return res.status(500).json({
+          console.log(error)
+            return res.status(500).json({ 
                 msg: 'Complete todos los campos'
             })
         }
@@ -61,12 +64,24 @@ export const getVentas = async (req,res) => {
     
     }
     
+    export const getVenta = async (req,res) =>{
+     
+        try {
+            const [rows] = await pool.query('SELECT * FROM venta') 
+     res.send({rows})
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Something goes wrong'
+            })
+        }
+    }
+
     export const getVentaId = async (req,res) =>{
      
         try {
             const [rows] = await pool.query('SELECT * FROM venta WHERE id=?',[req.params.id]) 
          if (rows.length <= 0 )return res.status(404).json({
-            message: 'Producto no encontrado'
+            message: 'Venta no encontrado'
          })
      res.send({rows})
         } catch (error) {

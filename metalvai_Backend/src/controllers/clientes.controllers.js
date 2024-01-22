@@ -19,7 +19,7 @@ try {
 export const getClienteById = async (req, res) => {
 
     try {
-        const [rows] = await pool.query('SELECT * FROM cliente WHERE id=?', [req.params.id])
+        const [rows] = await pool.query('SELECT * FROM cliente WHERE idusuario=?', [req.params.id])
         if (rows.length <= 0) return res.status(404).json({
             message: 'Cliente no encontrado'
         })

@@ -4,7 +4,7 @@ import { pool } from '../db.js'
 export const getProductoById = async (req, res) => {
 
     try {
-        const [rows] = await pool.query('SELECT * FROM producto WHERE id=?', [req.params.id])
+        const [rows] = await pool.query('SELECT * FROM producto WHERE idusuario=?', [req.params.id])
         if (rows.length <= 0) return res.status(404).json({
             message: 'Producto no encontrado'
         })
