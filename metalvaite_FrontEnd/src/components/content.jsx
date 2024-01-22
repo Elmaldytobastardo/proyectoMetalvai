@@ -1,5 +1,5 @@
 
-  import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import clienteAxios from "../config/axios";
 
 import {BarChart, Bar, Rectangle,
@@ -19,11 +19,14 @@ export function Content() {
   const [data, setData] = useState([]);
   const [datosAgrupadosPorMes, setDatosAgrupadosPorMes] = useState([]);
   const { auth } = useAuth()
- 
+  
+  const [data2, setData2] = useState([]);
+
   const [mesSeleccionado, setMesSeleccionado] = useState('01');
   const [mesSeleccionadoProd, setMesSeleccionadoProd] = useState(''); 
   const [anoSeleccionado, setAnoSeleccionado] = useState('2024');
   const [anoSeleccionadoProd, setAnoSeleccionadoProd] = useState('');
+  const [productosCalculados, setProductosCalculados] = useState([])
   const [idusuario] = useState(auth.id)
 
 
@@ -34,7 +37,13 @@ export function Content() {
     agruparDatos() 
     
   } 
+
 , [ mesSeleccionadoProd,anoSeleccionadoProd]);  
+
+const productosOrdenados = useMemo(() => {
+  return productosCalculados.sort((a, b) => b.porcentaje - a.porcentaje);
+}, [productosCalculados]);
+
 
 const agruparDatos = async () => {
      
@@ -117,21 +126,41 @@ useMemo(() => {
   agruparDatos() 
   }, [data,mesSeleccionadoProd,anoSeleccionadoProd]);
 
-const obtenerDatos = async () => {
-  const id = idusuario 
-  await clienteAxios.get(`/getVentasByUser/${id}`) 
-    .then(response => {
-     
-      setData(response.data.rows);
-     
-    })
-    .catch(error => {
-      console.error('Error al obtener datos:', error);
-    });
-}
-  
 
   
+async function obtenerDatos() {
+  clienteAxios.get(`/getVentasByUser/${idusuario}`).then(response => {
+    setData(response.data.rows);
+  }).catch(error => { console.error('Error al obtener datos:', error); });
+
+  clienteAxios.get(`/getProductos/${idusuario}`).then(response => {
+    setData2(response.data.rows);
+    if (response.data.rows.length > 0) {
+      calcularStockCritico(response.data.rows);
+    }
+  }).catch(error => { console.error('Error al obtener datos:', error); });
+  
+}
+  
+const calcularStockCritico = (datos) => {
+  const nuevosProductosCalculados = [];
+
+  for (let i = 0; i < datos.length; i++) {
+    const producto = datos[i];
+    if (producto.stock_critico != null) {
+      producto.porcentaje = (producto.stock_critico * 100) / producto.stock;
+
+      if (producto.porcentaje >= 50) {
+        nuevosProductosCalculados.push(producto);
+      }
+    }
+  }
+
+  setProductosCalculados(nuevosProductosCalculados);
+};
+
+
+
 const handleChangeMesProd = (event) => {
   setMesSeleccionadoProd(event.target.value); 
 };
@@ -149,7 +178,35 @@ const handleChangeAñoProd = (event) => {
     setAnoSeleccionado(event.target.value);
   };
 
- 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const tooltipStyle = {
+        border: '1px solid #ccc',
+        backgroundColor: '#fff',
+        padding: '10px',
+        borderRadius: '5px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      };
+      const defaultTooltip = payload.map((entry) => {
+        const color = entry.dataKey === 'stock' ? 'green' : '#D71818';
+        return (
+          <p key={entry.name} className="label" style={{ color }}>
+            {`${entry.name} : ${entry.value}`}
+          </p>
+        );
+      });
+
+      return (
+        <div className="custom-tooltip" style={tooltipStyle}>
+          {defaultTooltip}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+
   const CustomTooltipProd = ({ active, payload, label }) => {
    
     if (active && payload && payload.length) {
@@ -202,9 +259,9 @@ const handleChangeAñoProd = (event) => {
   return (
     <>
     
-    <div className="lg:flex ">
-
- <Card className="flex justify-center items-center mt-6 w-full lg:w-[40rem]">
+    <div className="flex lg:flex-wrap">
+<div className="w-full lg:w-[35rem] h-full">
+<Card className="flex justify-center items-center mt-6">
  
  <Typography className=" text-black" variant="h4">
          Ventas mensuales de {auth.nombre}
@@ -261,8 +318,9 @@ const handleChangeAñoProd = (event) => {
     
        
          </Card>
-  
-         <Card className="flex justify-center items-center lg:ml-10 mt-6 w-full lg:w-[40rem]">
+</div>
+ <div className="w-full lg:w-[35rem] h-full">
+ <Card className="flex justify-center items-center lg:ml-5 mt-6 ">
  
  <Typography className=" text-black" variant="h4">
           Productos más vendidos
@@ -326,6 +384,49 @@ const handleChangeAñoProd = (event) => {
        
 }
          </Card>
+ </div>
+  
+         
+<div className="w-full lg:w-[35rem] h-full">
+<Card className="flex justify-center items-center lg:ml-10 mt-6 ">
+
+<Typography className=" text-black" variant="h4">
+  Productos más cercanos a su Stock Crítico
+</Typography>
+
+{(
+
+  <ResponsiveContainer maxwidth="100%" width="100%" aspect={1.5}>
+    <BarChart
+      width={1000}
+      height={500}
+      data={productosOrdenados}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 5,
+      }}
+    >
+      <CartesianGrid strokeDasharray="4 1 2" />
+      <XAxis dataKey="nombre" />
+      <YAxis dataKey="stock" />
+      <YAxis dataKey="stock_critico" />
+      <Tooltip content={<CustomTooltip />} />
+      <Legend />
+      <Bar name="Stock Actual" dataKey="stock" fill="green" />
+      <Bar name="Stock Crítico" dataKey="stock_critico" fill="#D71818" />
+    </BarChart>
+  </ResponsiveContainer>
+
+)
+
+
+}
+</Card>
+</div>
+        
+
          </div>
     </>
   );

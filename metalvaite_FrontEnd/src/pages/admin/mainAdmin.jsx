@@ -12,9 +12,9 @@ function mainAdmin() {
      <div className='flex flex-col h-screen'>
     <NavbarDefault/>
     
-    <div className="flex h-screen pt-5">
+    <div className="flex pt-5 ">
     <SidebarWithBurgerMenu/>
-    <div className='pl-[1rem]'>
+    <div className='pl-[1rem] '>
     <Content/>
     </div>
     
