@@ -55,7 +55,7 @@ const handleCellEditingStopped =  async (event) => {
                 resetForm()
                 toast.success('Producto actualizado exitosamente');
               }catch(error){
-                console.log(error)
+              
                 obtenerDatos()
                 toast.error(`${error.response.data.msg}`);
              

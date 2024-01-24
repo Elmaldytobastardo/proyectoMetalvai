@@ -122,7 +122,7 @@ export function SidebarWithBurgerMenu() {
             </NavLink>
       </List>
     </Card>
-      <IconButton className="lg:hidden" variant="text" size="md" onClick={openDrawer}>
+      <IconButton className="pl-6 lg:hidden" variant="text" size="lg" onClick={openDrawer}>
         {isDrawerOpen ? (
           <XMarkIcon className="h-8 w-8 stroke-2" />
         ) : (
@@ -184,7 +184,7 @@ export function SidebarWithBurgerMenu() {
         </ListItem>
        </NavLink>
        <NavLink
-  to="/admin/clientes"
+  to="/admin/cliente"
   className={({ isActive, isPending }) =>
     isPending ? "bg-white" : isActive ? "bg-gray-200 rounded-xl" : ""
   }

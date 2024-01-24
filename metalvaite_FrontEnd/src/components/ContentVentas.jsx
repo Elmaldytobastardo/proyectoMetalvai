@@ -53,13 +53,13 @@ export function ContentVentas() {
       setDatos(res.data.rows)
 
     }).catch((err) => {
-      console.log("chaoo 0")
+    
     })
     const res2 = await clienteAxios.get(`/getClientes/${id}`).then((res2) => {
       setClientes(res2.data.rows)
 
     }).catch((err) => {
-      console.log("chaoo 2")
+    
     })
   }
 
@@ -71,7 +71,7 @@ export function ContentVentas() {
     const id = idusuario
     const res3 = await clienteAxios.get(`/getProductos/${id}`).then((res3) => {
       setProductos(res3.data.rows)
-      console.log("olaaa")
+     
 
     })
     setDesplegableAbierto(!desplegableAgregarAbierto);
@@ -141,7 +141,7 @@ export function ContentVentas() {
       
       
     } catch (error) {
-      console.log(error)
+      
       toast.error(`${error.response.data.msg}`);
     }
    

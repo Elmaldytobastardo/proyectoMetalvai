@@ -2,7 +2,7 @@ import React from 'react'
 import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { useEffect, useState } from "react";
+
 import {
   MagnifyingGlassIcon,
   PlusCircleIcon 
@@ -24,7 +24,7 @@ const Datagrid = (props) => {
     
  <Card className="h-full w-full">
   <CardHeader floated={false} shadow={false} className="rounded-none pt-2">
-        <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+        <div className="sm:pb-20 md:pb-12 lg:pb-5 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div>
             <Typography variant="h5" color="blue-gray">
                 {props.nombre}

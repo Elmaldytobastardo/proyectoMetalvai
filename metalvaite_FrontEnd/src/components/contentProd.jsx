@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import clienteAxios from "../config/axios";
 import Datagrid from "./Datagrid";
 import toast, { Toaster } from 'react-hot-toast';
@@ -27,21 +27,27 @@ export function ContentProd(props) {
     
     useEffect(() => {
         obtenerDatos();
+       
     }, []);
+   
+   
+  
+    const obtenerDatos = async (e) => {
+      const id = idusuario
+      const url = `/getProductos/${id}`
+      const res = await clienteAxios.get(url)
+      setRowData(res.data.rows)
+      
+  }
 
-
+    
+   
   const [desplegableAgregarAbierto, setDesplegableAbierto] = useState(false);
 
 const toggleDesplegable = () => {
     setDesplegableAbierto(!desplegableAgregarAbierto);
   };
- 
-  const obtenerDatos = async (e) => {
-    const id = idusuario
-    const url = `/getProductos/${id}`
-    const res = await clienteAxios.get(url)
-    setRowData(res.data.rows)
-}
+
 
 
 const handleCellEditingStopped =  async (event) => {
@@ -103,6 +109,7 @@ const handleCellEditingStopped =  async (event) => {
                 const {data} = await clienteAxios.post(url, {nombre:nombre,precio:precio,stock:stock,idusuario:idusuario,stock_critico:stock_critico || null })
                 obtenerDatos()
                 resetForm()
+                
                 toast.success('Producto agregado exitosamente');
               }catch(error){
                

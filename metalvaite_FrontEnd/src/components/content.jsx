@@ -86,7 +86,7 @@ const mesesConvert = {
       
       const clave = `${mes}-${ano}-${producto.nombre}`;
       
-      console.log(clave)
+      
       
       if (!datosAgrupados[clave]) {
         datosAgrupados[clave] = {
@@ -131,14 +131,14 @@ useMemo(() => {
 async function obtenerDatos() {
   clienteAxios.get(`/getVentasByUser/${idusuario}`).then(response => {
     setData(response.data.rows);
-  }).catch(error => { console.error('Error al obtener datos:', error); });
+  }).catch(error => {  });
 
   clienteAxios.get(`/getProductos/${idusuario}`).then(response => {
     setData2(response.data.rows);
     if (response.data.rows.length > 0) {
       calcularStockCritico(response.data.rows);
     }
-  }).catch(error => { console.error('Error al obtener datos:', error); });
+  }).catch(error => {  });
   
 }
   
@@ -259,7 +259,7 @@ const handleChangeAñoProd = (event) => {
   return (
     <>
     
-    <div className="flex lg:flex-wrap">
+    <div className="flex flex-wrap lg:flex-wrap">
 <div className="w-full lg:w-[35rem] h-full">
 <Card className="flex justify-center items-center mt-6">
  
@@ -312,7 +312,7 @@ const handleChangeAñoProd = (event) => {
           <YAxis dataKey="precio"/>
           <Tooltip />
           <Legend />
-          <Bar dataKey="precio" fill="#D71818" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+          <Bar dataKey="precio" name="Precio" fill="#D71818" activeBar={<Rectangle fill="gold" stroke="purple" />} />
         </BarChart>
         </ResponsiveContainer>
     
