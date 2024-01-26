@@ -23,7 +23,7 @@ export function ContentProd(props) {
     const [searchTerm, setSearchTerm] = useState('');
     
     const [open, setOpen] = useState(true);
-    
+  
     
     useEffect(() => {
         obtenerDatos();
@@ -36,11 +36,13 @@ export function ContentProd(props) {
       const id = idusuario
       const url = `/getProductos/${id}`
       const res = await clienteAxios.get(url)
+     
       setRowData(res.data.rows)
+    
       
   }
 
-    
+ 
    
   const [desplegableAgregarAbierto, setDesplegableAbierto] = useState(false);
 
@@ -104,13 +106,14 @@ const handleCellEditingStopped =  async (event) => {
         e.preventDefault()
             
             try{
-                
+                 
                 const url = '/postProductos'
-                const {data} = await clienteAxios.post(url, {nombre:nombre,precio:precio,stock:stock,idusuario:idusuario,stock_critico:stock_critico || null })
+                const data = await clienteAxios.post(url, {nombre,precio,stock,idusuario,stock_critico })
+                toast.success('Producto agregado exitosamente'); 
                 obtenerDatos()
                 resetForm()
-                
-                toast.success('Producto agregado exitosamente');
+               
+             
               }catch(error){
                
                 toast.error(`${error.response.data.msg}`);
@@ -124,9 +127,6 @@ const handleCellEditingStopped =  async (event) => {
         
         const res = await clienteAxios.delete(`/delProductos/${id}`).then((res) =>{
           setOpen(true)
-          setAlerta({
-            msg:"Producto eliminado exitosamente"
-           })
            toast.success('Producto eliminado exitosamente');
           obtenerDatos()
         
@@ -153,6 +153,7 @@ const handleCellEditingStopped =  async (event) => {
         <>
       
         <Toaster position="top-center" />
+        
         <div className="lg:w-[62rem] h-full">
     <Datagrid  onSearchTermChange={onSearchTermChange} 
     filteredRowData={filteredRowData}

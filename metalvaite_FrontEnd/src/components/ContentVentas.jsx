@@ -50,6 +50,7 @@ export function ContentVentas() {
     const id = idusuario
    
     const res = await clienteAxios.get(`/getVentasByUser/${id}`).then((res) => {
+      console.log(res.data.rows)
       setDatos(res.data.rows)
 
     }).catch((err) => {
@@ -62,7 +63,7 @@ export function ContentVentas() {
     
     })
   }
-
+  
 
 
   const toggleDesplegable = async () => {
@@ -141,13 +142,13 @@ export function ContentVentas() {
       
       
     } catch (error) {
-      
+    
       toast.error(`${error.response.data.msg}`);
     }
    
 
   }
-
+ 
 
   const actualizar = (valorTotalSuma) => {
     if (clienteSeleccionado && listaProductos) {
@@ -226,6 +227,7 @@ export function ContentVentas() {
   async function verProductos(data) {
     setOpen(!open)
     const url= await clienteAxios.get(`/getVentaId/${data.id}`).then((url) => {
+      
       setVerVenta(url.data.rows)
       setProductosVenta(JSON.parse(data.productos))
      

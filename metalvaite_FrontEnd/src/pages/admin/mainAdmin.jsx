@@ -7,14 +7,9 @@ import { Footer } from '../../components/footer'
 import sendNotification from '../../components/notificaciones'
 function mainAdmin() {
  
-  useEffect(() => {
-   
-    if ('Notification' in window) {
-      Notification.requestPermission();
-    }
-  }, []);
+ 
 
-  sendNotification()
+
   return (
     <>
    

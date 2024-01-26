@@ -5,11 +5,16 @@ webpush.setVapidDetails('mailto:loopx14@gmail.com', process.env.KEY_PUBLIC, proc
 let pushSubscription;
 
 const enviarNotificacion = async (req, res) => {
-    const pushSubscription = req.body  
-  
-    
    
-        const payload = JSON.stringify({tittle: 'Prueba', message:'holis'})
+  const pushSubscription = req.body  
+  // const {id} = req.body
+  // for (let i =0; i < productosParse.length; i++) {
+             
+  //   const [getStock] = await pool.query('SELECT stock FROM producto WHERE id = ? ', [id]) 
+  //   console.log(getStock)
+ 
+  // }
+        const payload = JSON.stringify({tittle: 'Stock Critico', message:'holis'})
         try {
             console.log() 
           await  webpush.sendNotification(pushSubscription.subscription, payload);   

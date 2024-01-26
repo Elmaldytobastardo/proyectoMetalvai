@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import MainAdmin from './pages/admin/mainAdmin'
 import ProdAdmin from './pages/admin/ProdAdmin'
@@ -11,7 +11,6 @@ import ClienteAdmin from './pages/admin/ClienteAdmin'
 
 
 function App() {
-
 
   return (
     <>

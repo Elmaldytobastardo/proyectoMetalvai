@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../config/axios";
+import Notificaciones from './notificaciones'
 
 export function NavbarDefault() {
   const [openNav, setOpenNav] = useState(false);
@@ -41,7 +42,7 @@ export function NavbarDefault() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        Bienvenido {auth.nombre}
+        Bienvenido {auth.nombre} 
       
       </Typography>
     </ul>
@@ -62,14 +63,16 @@ export function NavbarDefault() {
     
 
         <div className="hidden lg:block">{navList}</div>
+
         <div className="flex items-center gap-x-1">
+        <Notificaciones/>
         </div>
       
       </div>
       <Collapse >
         <div className="container mx-auto">
           {navList}
-
+         
         </div>
       </Collapse >
     </Navbar>

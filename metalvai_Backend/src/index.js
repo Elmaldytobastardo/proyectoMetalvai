@@ -7,6 +7,8 @@ import admin from './routes/admin.routes.js'
 import ventas from './routes/ventas.routes.js'
 import clientes from './routes/clientes.routes.js'
 import notificacion from './routes/notificacion.routes.js'
+
+
 const app = express()
 app.use(express.json())
 app.disable('x-powered-by')
