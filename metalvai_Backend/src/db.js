@@ -1,12 +1,14 @@
-import { createPool } from "mysql2/promise";
+
+import pkg from 'pg';
+const { Pool } = pkg;
+const connectionString = process.env.DATABASE
 import "dotenv/config"
+    export const pool = new Pool({
+        connectionString
+    })
 
-export const pool = createPool({
-    host: process.env.HOST_SQL,
-    user: process.env.USER,
-    password: process.env.PASS,
-    port: process.env.PORT_SQL,
-    database: process.env.DATABASE,
-
-})
-
+   try {
+ 
+   } catch (error) { 
+    
+   }

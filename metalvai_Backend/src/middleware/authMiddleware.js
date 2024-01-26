@@ -8,7 +8,7 @@ const checkAuth = async (req,res,next) => {
     try {
         token = req.headers.authorization.split(" ")[1];
         const decoded= jwt.verify(token, process.env.JWT_SECRET);
-        req.admin = await pool.query('SELECT id,nombre,email FROM usuario WHERE id = ?',[decoded.id]) 
+        req.admin = await pool.query('SELECT id,nombre,email FROM usuario WHERE id = $1',[decoded.id]) 
         return next();
 
     } 

@@ -6,9 +6,9 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useRef } from "react";
 import clienteAxios from "../config/axios";
-import { CheckIcon, UserPlusIcon, TrashIcon, XMarkIcon, EyeIcon } from "@heroicons/react/24/solid";
+import { CheckIcon,  XMarkIcon, EyeIcon } from "@heroicons/react/24/solid";
 import Datagrid from "./Datagrid";
 import { Select, Option } from "@material-tailwind/react";
 import moment from "moment"
@@ -38,27 +38,71 @@ export function ContentVentas() {
   const [open, setOpen] = useState(false);
   const [productosVenta, setProductosVenta] = useState([])
   const [verVenta, setVerVenta] = useState([])
+  
+  useEffect(() => {
+    
+    obtenerDatos();
+    calcularTotal();
+  }, [listaProductos]);
+
+
+  async function obtenerDatos() {
+    const id = idusuario
+   
+    const res = await clienteAxios.get(`/getVentasByUser/${id}`).then((res) => {
+      console.log(res.data.rows)
+      setDatos(res.data.rows)
+
+    }).catch((err) => {
+    
+    })
+    const res2 = await clienteAxios.get(`/getClientes/${id}`).then((res2) => {
+      setClientes(res2.data.rows)
+
+    }).catch((err) => {
+    
+    })
+  }
+  
+
 
   const toggleDesplegable = async () => {
-    setDesplegableAbierto(!desplegableAgregarAbierto);
-    const url = '/getProductos'
-    const res = await clienteAxios.get(url)
-    setProductos(res.data.rows)
-  };
+    
+   
+    const id = idusuario
+    const res3 = await clienteAxios.get(`/getProductos/${id}`).then((res3) => {
+      setProductos(res3.data.rows)
+     
 
+    })
+    setDesplegableAbierto(!desplegableAgregarAbierto);
+    agregarProducto([])
+    setClienteSeleccionado([])
+  };
+  
+ 
   const seleccionarProducto = async (producto) => {
+   const id = idusuario
+   
     producto.resultado = producto.precio
     producto.cantidad = 1
+    
     setProductoSeleccionado(producto)
     agregarProducto((prevProductos) => [...prevProductos, producto])
+ 
+    
     const indiceAEliminar = productosBD.indexOf(producto);
     if (indiceAEliminar !== -1) {
       productosBD.splice(indiceAEliminar, 1);
+      
     }
-
+  
     setDesplegarOpcionesB(!desplegarOpcionesB);
   };
+
+
   const seleccionarCliente = (cliente) => {
+    
     setClienteSeleccionado(cliente)
     setNombre(cliente.nombre)
     setIdcliente(cliente.id)
@@ -66,32 +110,45 @@ export function ContentVentas() {
   }
 
   const verOpcionesA = async () => {
-    const url = '/getClientes'
-    const res = await clienteAxios.get(url)
-    setClientes(res.data.rows)
+   
     setDesplegarOpcionesA(!desplegarOpcionesA);
   };
 
   const verOpcionesB = async () => {
     setDesplegarOpcionesB(!desplegarOpcionesB);
   };
-
-  const guardar = async () => {
   
-    
+  const guardar = async () => { 
+  
+
+    if(nombre === '' ){
+      toast.error(`Seleccione un Cliente`);
+      return
+    }
+    if(listaProductos.length == 0 ){
+      toast.error(`Seleccione un producto`);
+      return
+    }
+
     try {
     
-      const url = '/postVentas'
+      const url = `/postVentas`
       const res = await clienteAxios.post(url, { nombre, fecha_venta, precio, idusuario, idcliente, productos })
       toast.success('Venta agregada exitosamente');
+      listaProductos.map((producto) => (producto.stock = producto.stock - producto.cantidad))
+   
+  
       obtenerDatos();
-     
+      
+      
     } catch (error) {
+    
       toast.error(`${error.response.data.msg}`);
     }
    
 
   }
+ 
 
   const actualizar = (valorTotalSuma) => {
     if (clienteSeleccionado && listaProductos) {
@@ -100,15 +157,22 @@ export function ContentVentas() {
     }
       setNombre(clienteSeleccionado.nombre)
       setPrecio(valorTotalSuma)
+      
       setIdcliente(clienteSeleccionado.id)
       setProductosParse(JSON.stringify(listaProductos))
     }
   }
   const calcular = (cantidad, producto) => {
+    const nuevoValor = cantidad;
     producto.cantidad = parseInt(cantidad)
+    
     producto.resultado = cantidad * producto.precio
+    
+    
     calcularTotal()
   }
+  
+ 
 
   const eliminarProducto = async (producto) => {
     const indiceAEliminar = listaProductos.indexOf(producto);
@@ -116,6 +180,7 @@ export function ContentVentas() {
       listaProductos.splice(indiceAEliminar, 1);
     }
     setProductos((prevProductos) => [...prevProductos, producto])
+
     calcularTotal()
   }
 
@@ -124,10 +189,15 @@ export function ContentVentas() {
     for (let i = 0; i < listaProductos.length; i++) {
       valorTotalSuma += listaProductos[i].resultado
     }
+    
     setValorTotal(valorTotalSuma)
+
+
     actualizar(valorTotalSuma);
 
   }
+
+
 
   const fijarFecha = (fecha) => {
     fecha = moment(fecha).format("DD/MM/YYYY")
@@ -157,8 +227,10 @@ export function ContentVentas() {
   async function verProductos(data) {
     setOpen(!open)
     const url= await clienteAxios.get(`/getVentaId/${data.id}`).then((url) => {
+      
       setVerVenta(url.data.rows)
       setProductosVenta(JSON.parse(data.productos))
+     
     }).catch((err) => {
     })
 
@@ -168,6 +240,7 @@ export function ContentVentas() {
     setOpen(!open)
     setVerVenta([])
     setProductosVenta([])
+   
   }
 
   const [colDefs, setColDefs] = useState([
@@ -201,17 +274,17 @@ export function ContentVentas() {
 
   ]);
   
-  const obtenerDatos = async (e) => {
-    const url = '/getVentas'
-    const res = await clienteAxios.get(url)
 
-    setDatos(res.data.rows)
-  };
 
-  useEffect(() => {
-    obtenerDatos();
-    calcularTotal();
-  }, [listaProductos]);
+  
+
+
+  
+
+
+
+
+
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -257,6 +330,7 @@ export function ContentVentas() {
               <tr>
                 <th className="py-1 px-1 border-b text-sm">Nombre</th>
                 <th className="py-1 px-1 border-b text-sm">Cantidad</th>
+                <th className="py-1 px-1 border-b text-sm">Stock</th>
                 <th className="py-1 px-1 border-b text-sm">Total</th>
                 <th className="py-1 px-1 border-b text-sm">Eliminar</th>
               </tr>
@@ -270,12 +344,24 @@ export function ContentVentas() {
                     </Typography>
                   </td>
                   <td className="p-1 w-1">
-                    <input className="w-10 border-2 border-rose-500" type="number" defaultValue={1} onChange={(e) => calcular(e.target.value, producto)} />
+                    <input className="w-10 border-2 " min="1" pattern="^[0-9]+" type="number" defaultValue={1} 
+
+                    onChange={(e) => calcular(e.target.value, producto)} />
                   </td>
                   <td className="p-1">
                     <div>
                       <Typography as="a" href="#">
-                        {producto.resultado}
+                        {producto.stock}
+                      </Typography>
+                    </div>
+                  </td>
+                  <td className="p-1">
+                    <div>
+                      <Typography as="a" href="#">
+                      {new Intl.NumberFormat('es-CL', {
+                    style: 'currency',
+                    currency: 'CLP',
+                  }).format(producto.resultado)}
                       </Typography>
                     </div>
                   </td>
@@ -294,8 +380,15 @@ export function ContentVentas() {
           </table>
 
           <div className="w-72 mt-2">
-            <Select className="appearance-none border border-gray-300 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500 max-h-[200px] overflow-y-auto" label="Lista de Productos" onClick={verOpcionesB}>
-              {productosBD.map((producto) => (<Option key={producto.id} href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id={`menu-item-${producto.id}`} onClick={() => seleccionarProducto(producto)}>{producto.nombre}</Option>))}
+            <Select className="appearance-none border border-gray-300 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500 max-h-[200px] overflow-y-auto" 
+            label="Lista de Productos" 
+            onClick={verOpcionesB}>
+              {productosBD.map((producto) => (
+              <Option key={producto.id} href="#"
+               className="text-gray-700 block px-4 py-2 text-sm" 
+               role="menuitem" tabIndex="-1"
+                id={`menu-item-${producto.id}`} 
+                onClick={() => seleccionarProducto(producto)}>{producto.nombre}</Option>))}
             </Select>
           </div>
 
@@ -321,9 +414,7 @@ export function ContentVentas() {
             <table className="w-full table-auto text-left">
               <thead>
                 {verVenta.map((venta) => 
-              
-                  
-                
+     
                 (<div key={venta.id}>
                   <Typography>Nombre Cliente: {venta.nombre}</Typography>
                   <Typography>Fecha de Venta: {venta.fecha_venta}</Typography>

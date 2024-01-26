@@ -23,8 +23,8 @@ const AuthProvider = ({children}) =>{
             }
             try {
                 const {data} = await clienteAxios.get('/getAdmin' ,config)
-                
-                setAuth(data[0])
+               
+                setAuth(data.rows[0])
                 
             } catch (error) {
                 

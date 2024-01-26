@@ -1,25 +1,22 @@
-import { useState, useEffect } from 'react'
-import clienteAxios from '../../config/axios'
+import { useState } from 'react'
 import {SidebarWithBurgerMenu} from '../../components/sidebar'
 import { NavbarDefault } from '../../components/navbar'
-import { Content } from '../../components/content'
 import { Footer } from '../../components/footer'
-import sendNotification from '../../components/notificaciones'
-function mainAdmin() {
- 
- 
+import { ContentClie } from '../../components/ContentClie'
+
+
+function ClienteAdmin() {
 
 
   return (
     <>
-   
      <div className='flex flex-col h-screen'>
     <NavbarDefault/>
     
-    <div className="flex sm:pl-4 md:pl-4 lg:pl-0 pt-5 ">
+    <div className="flex h-screen pt-5">
     <SidebarWithBurgerMenu/>
-    <div className='pl-[1rem] '>
-    <Content/>
+    <div className='pl-[2rem] '>
+    <ContentClie/>
     </div>
     
     </div>
@@ -33,4 +30,4 @@ function mainAdmin() {
   )
 }
 
-export default mainAdmin
+export default ClienteAdmin
