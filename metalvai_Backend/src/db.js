@@ -9,6 +9,6 @@ import "dotenv/config"
 
    try {
  
-   } catch (error) {
+   } catch (error) { 
     
    }
