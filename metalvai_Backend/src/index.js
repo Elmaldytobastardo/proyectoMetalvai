@@ -25,7 +25,7 @@ const corsOption = {
     }
 }
 
-app.use(cors(corsOption))
+//app.use(cors(corsOption))
 
 
 app.use(admin)
