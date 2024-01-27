@@ -27,7 +27,7 @@ const corsOption = {
 
 //app.use(cors(corsOption))
 
-
+app.get("/",(req,res)=>{const htmlResponse="<head><body>olaaaaaa</body></head>"; res.send(htmlResponse)})
 app.use(admin)
 app.use(productos)
 app.use(clientes)
